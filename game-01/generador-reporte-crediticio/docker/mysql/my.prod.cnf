@@ -1,0 +1,76 @@
+# =============================================================================
+# CONFIGURACIÓN MYSQL PARA PRODUCCIÓN
+# =============================================================================
+# Optimizada para rendimiento y durabilidad de datos.
+# IMPORTANTE: Ajustar innodb_buffer_pool_size según RAM del servidor
+# =============================================================================
+
+[mysqld]
+character-set-server = utf8mb4
+collation-server = utf8mb4_unicode_ci
+
+# -------------------------------------------------------------------------
+# InnoDB - Configuración de Producción
+# -------------------------------------------------------------------------
+# Buffer pool: 70-80% de la RAM disponible para MySQL
+# Ejemplo: Para servidor con 4GB RAM dedicados a MySQL, usar 3G
+innodb_buffer_pool_size = 1G
+innodb_buffer_pool_instances = 4
+
+innodb_log_file_size = 256M
+innodb_log_buffer_size = 16M
+
+# Flush cada commit (máxima durabilidad)
+innodb_flush_log_at_trx_commit = 1
+
+# Double write habilitado (integridad de datos)
+innodb_doublewrite = ON
+
+# Flush method óptimo para Linux
+innodb_flush_method = O_DIRECT
+
+# -------------------------------------------------------------------------
+# CONSULTAS Y CONEXIONES
+# -------------------------------------------------------------------------
+max_allowed_packet = 64M
+wait_timeout = 300
+interactive_timeout = 300
+max_connections = 200
+
+sort_buffer_size = 4M
+join_buffer_size = 4M
+read_buffer_size = 2M
+read_rnd_buffer_size = 8M
+
+# -------------------------------------------------------------------------
+# TABLAS TEMPORALES
+# -------------------------------------------------------------------------
+tmp_table_size = 128M
+max_heap_table_size = 128M
+
+# -------------------------------------------------------------------------
+# LOGS
+# -------------------------------------------------------------------------
+slow_query_log = 1
+slow_query_log_file = /var/log/mysql/slow-query.log
+long_query_time = 1
+
+general_log = 0
+
+# Log binario para replicación y point-in-time recovery
+log-bin = mysql-bin
+binlog_format = ROW
+expire_logs_days = 14
+
+# -------------------------------------------------------------------------
+# SEGURIDAD
+# -------------------------------------------------------------------------
+symbolic-links = 0
+bind-address = 0.0.0.0
+local_infile = 0
+
+[client]
+default-character-set = utf8mb4
+
+[mysql]
+default-character-set = utf8mb4
